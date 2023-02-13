@@ -1,0 +1,69 @@
+{
+    "CANVAS":{
+        "COURSE": ""
+    },
+
+    "FUNCTION_TESTS":{
+        "TESTS": [
+            {
+                "NAME": "test1",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2],
+                "OUTPUT": 3
+            },
+            {
+                "NAME": "test2",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3],
+                "OUTPUT": 6
+            },
+            {
+                "NAME": "test3",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3, 4],
+                "OUTPUT": 10
+            },
+            {
+                "NAME": "test4",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3, 4, 5],
+                "OUTPUT": 15
+            },
+            {
+                "NAME": "test5",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3, 4, 5, 6],
+                "OUTPUT": 21
+            },
+            {
+                "NAME": "test6",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3, 4, 5, 6, 7],
+                "OUTPUT": 28
+            },
+            {
+                "NAME": "test7",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3, 4, 5, 6, 7, 8],
+                "OUTPUT": 36
+            },
+            {
+                "NAME": "test8",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "OUTPUT": 45
+            },
+            {
+                "NAME": "test9",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                "OUTPUT": 55
+            },
+            {
+                "NAME": "test10",
+                "FUNCTION": "add",
+                "INPUTS": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }
+        ]
+    }
+}
