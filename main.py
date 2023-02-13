@@ -25,15 +25,13 @@ def get_config_files():
             files.append(file)
     return files
 
-
 def get_submissions(config, config_file):
-    print("\nTesting config file: " + config_file)
+    
     try:
         course = canvas.get_course(config["CANVAS"]["COURSE_ID"])
     except:
         print("Error getting course from config file: " + config_file)
         return
-
     try:
         assignment = course.get_assignment(config["CANVAS"]["ASSIGNMENT_ID"])
     except:
@@ -47,13 +45,16 @@ def get_submissions(config, config_file):
         if submission.workflow_state == "submitted":
             # print("Testing submission: " + str(Canvas.get_user(canvas, 37434307).name))
             file = Canvas.get_file(canvas, submission.attachments[0])
-            print(file.get_contents())
             test_submission(file, config)
-
 
 def test_submission(file, config):
     pass
 
+# right now progress bar is being used for each config file. Soon it will be used for users submissions once we get testing working
+def progress_bar(progress, total, file_name):
+    perecent = 100 * (progress / float(total))
+    bar = "▮" * int(perecent) + "-" * (100 - int(perecent))
+    print(f"\r|{bar}| {perecent:.2f}% {file_name}", end="\r")
 
 def main():
     config_files = get_config_files()
@@ -66,7 +67,8 @@ def main():
             except:
                 print("Error loading config file: " + config_file)
                 continue
-
-
+        progress_bar(config_files.index(config_file) + 1, len(config_files), config_file)
+            
+            
 if __name__ == "__main__":
     main()
