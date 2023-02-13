@@ -25,8 +25,9 @@ def get_config_files():
             files.append(file)
     return files
 
+
 def get_submissions(config, config_file):
-    print("\nTesting config file: " + config_file )
+    print("\nTesting config file: " + config_file)
     try:
         course = canvas.get_course(config["CANVAS"]["COURSE_ID"])
     except:
@@ -49,8 +50,10 @@ def get_submissions(config, config_file):
             print(file.get_contents())
             test_submission(file, config)
 
+
 def test_submission(file, config):
     pass
+
 
 def main():
     config_files = get_config_files()
@@ -63,7 +66,7 @@ def main():
             except:
                 print("Error loading config file: " + config_file)
                 continue
-            
-            
+
+
 if __name__ == "__main__":
     main()
