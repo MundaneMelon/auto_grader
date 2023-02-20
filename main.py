@@ -2,12 +2,6 @@ from canvasapi import Canvas
 import os
 import json
 
-"""
-TO DO LIST
-
-get all turned in assignments and test them indivdually
-pull test function from config file with test cases
-"""
 
 # Canvas API URL
 API_URL = "https://canvas.instructure.com/"
@@ -48,7 +42,7 @@ def get_submissions(config, config_file):
             test_submission(file, config)
 
 def test_submission(file, config):
-    pass
+    test_file = open(config["FUNCTION_TESTS"]["TESTS"]), "r"
 
 # right now progress bar is being used for each config file. Soon it will be used for users submissions once we get testing working
 def progress_bar(progress, total, file_name):
@@ -64,9 +58,9 @@ def main():
             config = json.load(f)
             try:
                 get_submissions(config, config_file)
-            except:
-                print("Error loading config file: " + config_file)
-                continue
+            except Exception as e:
+                print("Error loading config file: " + config_file + " skipping...")
+                print(e)
         progress_bar(config_files.index(config_file) + 1, len(config_files), config_file)
             
             
