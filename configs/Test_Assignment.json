@@ -5,6 +5,7 @@
     },
 
     "FUNCTION_TESTS":{
+        
         "TEST_FILE": "scripts\\test_assignment.py",
 
         "TESTS": [

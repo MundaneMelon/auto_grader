@@ -42,7 +42,8 @@ def get_submissions(config, config_file):
             test_submission(file, config)
 
 def test_submission(file, config):
-    test_file = open(config["FUNCTION_TESTS"]["TESTS"]), "r"
+    test_file = open(config["FUNCTION_TESTS"]["TEST_FILE"]), "r"
+
 
 # right now progress bar is being used for each config file. Soon it will be used for users submissions once we get testing working
 def progress_bar(progress, total, file_name):
