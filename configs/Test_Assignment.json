@@ -1,24 +1,43 @@
 {
     "CANVAS":{
-        "COURSE_ID": "6105794",
-        "ASSIGNMENT_ID" : "35322737"
+
     },
 
-    "FUNCTION_TESTS":{
-        
-        "TEST_FILE": "scripts\\test_assignment.py",
-
-        "TESTS": [
-            {
-                "POINTS": 1,
-                "FUNCTION_NAME": "add_working",
-                "INPUTS": [1, 2]
-            },
-            {
-                "POINTS": 1,
-                "FUNCTION_NAME": "add_not_working",
-                "INPUTS": [1, 2]
-            }
-        ]
-    }
+    "TESTS": [
+        {
+            "POINTS": 5,
+            "FUNCTION_NAME": "add",
+            "INPUTS": [[1, 2], [4, 5]],
+            "OUTPUTS": [3, 9]
+        },
+        {
+            "POINTS": 4,
+            "FUNCTION_NAME": "switch",
+            "INPUTS": [[11, 20], [32, 5]],
+            "OUTPUTS": [[20, 11], [5, 32]]
+        },
+        {
+            "POINTS": 5,
+            "FUNCTION_NAME": "factorial",
+            "INPUTS": [1, 0, 5, 3, 10],
+            "OUTPUTS": [1, 1, 120, 6, 3628800]
+        },
+        {
+            "POINTS": 3,
+            "FUNCTION_NAME": "print_twice",
+            "INPUTS": ["Hello!", "Something"],
+            "PRINT": [["Hello!", "Hello!"], ["Something", "Something"]]
+        },
+        {
+            "POINTS": 10,
+            "FUNCTION_NAME": "get_user_input",
+            "USER INPUT": ["String", "Hello World"],
+            "OUTPUTS": ["String", "Hello World"]
+        },
+        {
+            "POINTS": 2,
+            "FUNCTION_NAME": "test_from_file",
+            "PRINT_FILE": "example_output.txt"
+        }
+    ]
 }
