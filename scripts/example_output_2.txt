@@ -1,0 +1,9 @@
+Enter address:
+Enter phone number:
+User Joe has ordered:
+Pepperoni pizza
+User address: 100 N 300 E
+User phone number: 1842304139
+Order cost: 15
+Paid with card
+------------------------------

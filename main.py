@@ -1,6 +1,10 @@
-from canvasapi import Canvas
+from canvasapi import Canvas  # pip install canvasapi
 import os
 import json
+import math
+import builtins
+import shutil
+import itertools
 
 # Canvas API URL
 API_URL = "https://canvas.instructure.com/"
@@ -9,6 +13,27 @@ API_KEY = "7~XHBD7yRxf00NlUvfzjf6e5mRpmzm0vpLnWqP1geDCeAuGKmiCRehopSg2oejoBwY"
 
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
+
+# Override standard input and print functions with mock functions for testing
+mock_inputs = iter([])
+mock_prints = []
+old_in = builtins.input
+old_out = builtins.print
+
+
+def mock_input(prompt):
+    print(prompt)
+    try:
+        return next(mock_inputs)
+    except StopIteration:
+        return ""
+
+
+def mock_print(*objects, sep='', end='\n', file=None, flush=False):
+    for obj in objects:
+        objs = obj.split('\n')
+        for item in objs:
+            mock_prints.append(item.rstrip())
 
 
 def get_config_files():
@@ -20,7 +45,6 @@ def get_config_files():
 
 
 def get_submissions(config, config_file):
-
     try:
         course = canvas.get_course(config["CANVAS"]["COURSE_ID"])
     except:
@@ -38,14 +62,89 @@ def get_submissions(config, config_file):
     for submission in submissions:
         if submission.workflow_state == "submitted":
             # print("Testing submission: " + str(Canvas.get_user(canvas, 37434307).name))
-            file = Canvas.get_file(canvas, submission.attachments[0])
-            check_submission(file, config)
+
+            # write the attachment to a file
+            attachment = Canvas.get_file(canvas, submission.attachments[0]).get_contents()
+            file = open("DownloadedAssignment.py", "w")  # TODO: add a proper name here for each file
+            for line in attachment:
+                file.write(line.rstrip('\r'))
+            file.close()
+            check_submission("DownloadedAssignment", config)
+            shutil.move("DownloadedAssignment.py", "downloads/DownloadedAssignment.py")
 
 
 def check_submission(file, config):
-    # TODO: get and open file here
+    submission = __import__(file)
+    total_score, max_score = 0, 0
+    builtins.input = mock_input
+    builtins.print = mock_print
+
     for test in config["TESTS"]:
-        function = test["TEST_FUNCTION"]
+        function = test["FUNCTION_NAME"]
+        score = 0
+        length = 1
+
+        if "USER_INPUT" in test:
+            global mock_inputs
+            _mock_inputs = []
+            # Unpack user input into a single stream
+            for item in test["USER_INPUT"]:
+                if type(item) is list:
+                    for sub_item in item:
+                        _mock_inputs.append(sub_item)
+                else:
+                    _mock_inputs.append(item)
+            mock_inputs = iter(_mock_inputs)
+            length = len(test["USER_INPUT"])
+
+        if "INPUTS" in test:
+            length = len(test["INPUTS"])
+
+        for i in range(length):
+            passes = True
+            if "INPUTS" in test:
+                try:
+                    result = eval(f"submission.{function}(*{test['INPUTS'][i]})")
+                except:
+                    passes = False
+                    break
+            else:
+                try:
+                    result = eval(f"submission.{function}()")
+                except:
+                    passes = False
+                    break
+
+            if "PRINT" in test:
+                expected_print = test["PRINT"][i]
+                passes = (expected_print == mock_prints)
+            elif "FILE_PRINT" in test:
+                expected_prints = []
+                if test["FILE_PRINT"][i] != "":
+                    print_file = open(test["FILE_PRINT"][i])
+                    for line in print_file:
+                        expected_prints.append((line.rstrip('\r\n')))
+                    print_file.close()
+                    passes = (expected_prints == mock_prints)
+            if "OUTPUTS" in test:
+                if test["OUTPUTS"][i] != "None":
+                    expected_output = test["OUTPUTS"][i]
+                    if "OUTPUT_TYPE" in test:
+                        expected_output = eval(f"{test['OUTPUT_TYPE']}(expected_output)")
+                else:
+                    expected_output = None
+                passes = passes and (result == expected_output)
+            if passes:
+                score += test["POINTS"] / length
+            mock_prints.clear()
+
+        max_score += test["POINTS"]
+        total_score += math.floor(score)
+
+    builtins.input = old_in
+    builtins.print = old_out
+
+    print(f"Score: {total_score} out of {max_score}")
 
 
 # right now progress bar is being used for each config file.

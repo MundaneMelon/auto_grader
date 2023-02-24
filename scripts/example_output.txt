@@ -1,1 +1,2 @@
-This is a test case output.
+This is a test case.
+This is another line.
