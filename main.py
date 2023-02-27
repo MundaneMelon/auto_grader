@@ -1,10 +1,10 @@
-from canvasapi import Canvas  # pip install canvasapi
+from canvasapi import Canvas  # pip install canvasapi 
 import os
 import json
 import math
 import builtins
 import shutil
-import itertools
+
 
 # Canvas API URL
 API_URL = "https://canvas.instructure.com/"
@@ -59,11 +59,11 @@ def get_submissions(config, config_file):
     submissions = assignment.get_submissions()
 
     # get submissions and test them
+    submission_count = 0
     for submission in submissions:
+        submission_count += 1
         if submission.workflow_state == "submitted":
-            # print("Testing submission: " + str(Canvas.get_user(canvas, 37434307).name))
-
-            # write the attachment to a file
+            progress_bar(submission_count, get_paginated_list_length(submissions), submission.attachments[0])
             attachment = Canvas.get_file(canvas, submission.attachments[0]).get_contents()
             file = open("DownloadedAssignment.py", "w")  # TODO: add a proper name here for each file
             for line in attachment:
@@ -74,7 +74,6 @@ def get_submissions(config, config_file):
 
 
 def check_submission(file, config):
-    submission = __import__(file)
     total_score, max_score = 0, 0
     builtins.input = mock_input
     builtins.print = mock_print
@@ -147,12 +146,18 @@ def check_submission(file, config):
     print(f"Score: {total_score} out of {max_score}")
 
 
-# right now progress bar is being used for each config file.
-# Soon it will be used for users submissions once we get testing working
-def progress_bar(progress, total, file_name):
+def get_paginated_list_length(paginated_list):
+    # Paginated lists don't have a length attribute, so we have to count them manually
+    count = 0
+    for x in paginated_list:
+        count += 1
+    return count
+        
+
+def progress_bar(progress, total, text): 
     percent = 100 * (progress / float(total))
     bar = "▮" * int(percent) + "-" * (100 - int(percent))
-    print(f"\r|{bar}| {percent:.2f}% {file_name}", end="\r")
+    print(f"\r|{bar}| {percent:.2f}% {text}", end="\r")
 
 
 def main():
@@ -166,7 +171,6 @@ def main():
             except Exception as e:
                 print("Error loading config file: " + config_file + "; skipping...")
                 print(e)
-        progress_bar(config_files.index(config_file) + 1, len(config_files), config_file)
 
 
 if __name__ == "__main__":
