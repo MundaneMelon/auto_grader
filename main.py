@@ -5,7 +5,6 @@ import math
 import builtins
 import shutil
 
-
 # Canvas API URL
 API_URL = "https://canvas.instructure.com/"
 # Canvas API key
@@ -74,75 +73,112 @@ def get_submissions(config, config_file):
 
 
 def check_submission(file, config):
-    total_score, max_score = 0, 0
-    builtins.input = mock_input
-    builtins.print = mock_print
-
     for test in config["TESTS"]:
         function = test["FUNCTION_NAME"]
-        score = 0
-        length = 1
+        if test["OUTPUT_TYPE"] == "print":
+            check_print(test)
+        elif test["OUTPUT_TYPE"] == "return":
+            check_return(test)
 
-        if "USER_INPUT" in test:
-            global mock_inputs
-            _mock_inputs = []
-            # Unpack user input into a single stream
-            for item in test["USER_INPUT"]:
-                if type(item) is list:
-                    for sub_item in item:
-                        _mock_inputs.append(sub_item)
-                else:
-                    _mock_inputs.append(item)
-            mock_inputs = iter(_mock_inputs)
-            length = len(test["USER_INPUT"])
 
-        if "INPUTS" in test:
-            length = len(test["INPUTS"])
-
-        for i in range(length):
-            passes = True
-            if "INPUTS" in test:
-                try:
-                    result = eval(f"submission.{function}(*{test['INPUTS'][i]})")
-                except:
-                    passes = False
-                    break
+def check_print(test):
+    total_score, max_score = 0, 0
+    builtins.print = mock_print
+    function = test["FUNCTION_NAME"]
+    score = 0
+    length = 1
+    if "USER_INPUT" in test:
+        global mock_inputs
+        _mock_inputs = []
+        # Unpack user input into a single stream
+        for item in test["USER_INPUT"]:
+            if type(item) is list:
+                for sub_item in item:
+                    _mock_inputs.append(sub_item)
             else:
-                try:
-                    result = eval(f"submission.{function}()")
-                except:
-                    passes = False
-                    break
-
-            if "PRINT" in test:
-                expected_print = test["PRINT"][i]
-                passes = (expected_print == mock_prints)
-            elif "FILE_PRINT" in test:
-                expected_prints = []
-                if test["FILE_PRINT"][i] != "":
-                    print_file = open(test["FILE_PRINT"][i])
-                    for line in print_file:
-                        expected_prints.append((line.rstrip('\r\n')))
-                    print_file.close()
-                    passes = (expected_prints == mock_prints)
-            if "OUTPUTS" in test:
-                if test["OUTPUTS"][i] != "None":
-                    expected_output = test["OUTPUTS"][i]
-                    if "OUTPUT_TYPE" in test:
-                        expected_output = eval(f"{test['OUTPUT_TYPE']}(expected_output)")
-                else:
-                    expected_output = None
-                passes = passes and (result == expected_output)
-            if passes:
-                score += test["POINTS"] / length
-            mock_prints.clear()
-
-        max_score += test["POINTS"]
-        total_score += math.floor(score)
-
-    builtins.input = old_in
+                _mock_inputs.append(item)
+        mock_inputs = iter(_mock_inputs)
+        length = len(test["USER_INPUT"])
+    if "INPUTS" in test:
+        length = len(test["INPUTS"])
+    for i in range(length):
+        passes = True
+        if "INPUTS" in test:
+            try:
+                result = eval(f"submission.{function}(*{test['INPUTS'][i]})")
+            except:
+                passes = False
+                break
+        else:
+            try:
+                result = eval(f"submission.{function}()")
+            except:
+                passes = False
+                break
+        if "PRINT" in test:
+            expected_print = test["PRINT"][i]
+            passes = (expected_print == mock_prints)
+        elif "FILE_PRINT" in test:
+            expected_prints = []
+            if test["FILE_PRINT"][i] != "":
+                print_file = open(test["FILE_PRINT"][i])
+                for line in print_file:
+                    expected_prints.append((line.rstrip('\r\n')))
+                print_file.close()
+                passes = (expected_prints == mock_prints)
+        if passes:
+            score += test["POINTS"] / length
+        mock_prints.clear()
     builtins.print = old_out
+    print(f"Score: {total_score} out of {max_score}")
 
+
+def check_return(test):
+    total_score, max_score = 0, 0
+    builtins.input = mock_input
+    function = test["FUNCTION_NAME"]
+    score = 0
+    length = 1
+    if "USER_INPUT" in test:
+        global mock_inputs
+        _mock_inputs = []
+        # Unpack user input into a single stream
+        for item in test["USER_INPUT"]:
+            if type(item) is list:
+                for sub_item in item:
+                    _mock_inputs.append(sub_item)
+            else:
+                _mock_inputs.append(item)
+        mock_inputs = iter(_mock_inputs)
+        length = len(test["USER_INPUT"])
+    if "INPUTS" in test:
+        length = len(test["INPUTS"])
+    for i in range(length):
+        passes = True
+        if "INPUTS" in test:
+            try:
+                result = eval(f"submission.{function}(*{test['INPUTS'][i]})")
+            except:
+                passes = False
+                break
+        else:
+            try:
+                result = eval(f"submission.{function}()")
+            except:
+                passes = False
+                break
+        if "OUTPUTS" in test:
+            if test["OUTPUTS"][i] != "None":
+                expected_output = test["OUTPUTS"][i]
+                if "OUTPUT_TYPE" in test:
+                    expected_output = eval(f"{test['OUTPUT_TYPE']}(expected_output)")
+            else:
+                expected_output = None
+            passes = passes and (result == expected_output)
+        if passes:
+            score += test["POINTS"] / length
+        mock_prints.clear()
+    builtins.input = old_in
     print(f"Score: {total_score} out of {max_score}")
 
 
@@ -152,9 +188,9 @@ def get_paginated_list_length(paginated_list):
     for x in paginated_list:
         count += 1
     return count
-        
 
-def progress_bar(progress, total, text): 
+
+def progress_bar(progress, total, text):
     percent = 100 * (progress / float(total))
     bar = "▮" * int(percent) + "-" * (100 - int(percent))
     print(f"\r|{bar}| {percent:.2f}% {text}", end="\r")
