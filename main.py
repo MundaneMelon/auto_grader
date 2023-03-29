@@ -2,7 +2,6 @@ from canvasapi import Canvas  # pip install canvasapi
 import os
 import json
 import importlib
-import inspect
 
 # Canvas API URL
 API_URL = "https://canvas.instructure.com/"
