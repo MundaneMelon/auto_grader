@@ -8,52 +8,16 @@
         {
             "POINTS": 5,
             "FUNCTION_NAME": "add",
-            "INPUTS": [[1, 2], [4, 5]],
-            "OUTPUTS": [3, 9]
-        },
-        {
-            "POINTS": 4,
-            "FUNCTION_NAME": "switch",
-            "INPUTS": [[11, 20], [32, 5]],
-            "OUTPUTS": [[20, 11], [5, 32]],
-            "OUTPUT_TYPE": "tuple"
+            "INPUTS": [[1, 2], [3, 4]],
+            "EXPECTED_OUTPUTS": [3, 9],
+            "OUTPUT_TYPE": "return"
         },
         {
             "POINTS": 5,
-            "FUNCTION_NAME": "factorial",
-            "INPUTS": [[1], [0], [5], [3], [10]],
-            "OUTPUTS": [1, 1, 120, 6, 3628800]
-        },
-        {
-            "POINTS": 3,
-            "FUNCTION_NAME": "print_twice",
-            "INPUTS": [["Hello!"], ["Something"]],
-            "PRINT": [["Hello!", "Hello!"], ["Something", "Something"]]
-        },
-        {
-            "POINTS": 10,
-            "FUNCTION_NAME": "get_user_input",
-            "USER_INPUT": [["String"], ["Hello World"]],
-            "OUTPUTS": ["String", "Hello World"],
-            "OUTPUT_TYPE": "str"
-        },
-        {
-            "POINTS": 2,
-            "FUNCTION_NAME": "check_from_file",
-            "FILE_PRINT": ["scripts/example_output.txt"]
-        },
-        {
-            "POINTS": 50,
-            "FUNCTION_NAME": "check_all_types",
-            "INPUTS": [
-                ["Joe", 15, "card", "Pepperoni"],
-                ["Susan", 25, "phone", "Pepperoni", "Cheese"],
-                ["Bob", 0, "", "check"]
-            ],
-            "USER_INPUT": [["100 N 300 E", "1842304139"], ["200 N 144 W", "4051301343"], ["300 S Gilman Circle"]],
-            "FILE_PRINT": ["scripts/example_output_2.txt", "scripts/example_output_3.txt", ""],
-            "OUTPUTS": [["Pepperoni pizza"], ["Pepperoni pizza", "Cheese pizza"], "None"],
-            "OUTPUT_TYPE": "list"
+            "FUNCTION_NAME": "subtract",
+            "INPUTS": [[3, 2], [4, 5]],
+            "EXPECTED_OUTPUTS": [1, -1],
+            "OUTPUT_TYPE": "return"
         }
     ]
 }
