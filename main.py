@@ -48,7 +48,7 @@ def get_submissions(config):
                 continue
 
         # SETTING TO IGNORE ALREADY GRADED SUBMISSIONS
-        if config["SETTINGS"]["IGNORE_GRADED"]:
+        if config["SETTINGS"]["IGNORE_ALREADY_GRADED"]:
             if submission.workflow_state == "graded":
                 print(f"{student_name} has already been graded... IGNORING")
                 continue
