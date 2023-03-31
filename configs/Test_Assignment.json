@@ -4,6 +4,13 @@
         "ASSIGNMENT_ID": "35322737"
     },
 
+    "SETTINGS":{
+        "IGNORE_UNSUBMITTED": false,
+        "IGNORE_GRADED": true,
+        "REGRADE_STUDENTS": ["student1", "student2"],
+        "DONT_GRADE_STUDENTS": ["student3", "student4"]
+    },
+
     "TESTS": [
         {
             "POINTS": 5,
@@ -18,6 +25,13 @@
             "INPUTS": [[3, 2], [4, 5]],
             "EXPECTED_OUTPUTS": [1, -1],
             "OUTPUT_TYPE": "return"
+        },
+        {
+            "POINTS": 5,
+            "FUNCTION_NAME": "multiply",
+            "INPUTS": [[2, 2], [5, 5]],
+            "EXPECTED_OUTPUTS": [4, 25],
+            "OUTPUT_TYPE": "print"
         }
     ]
 }
