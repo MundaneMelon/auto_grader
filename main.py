@@ -48,6 +48,7 @@ def check_submission(submission, config):
         elif test["OUTPUT_TYPE"] == "return":
             check_return(test, submission)
 
+
 def run_function(module_name, function_name, args):
     # dynamically import the module
     module = importlib.import_module(module_name)
@@ -64,6 +65,7 @@ def run_function(module_name, function_name, args):
 def check_print(test):
     pass
 
+
 def check_return(test, submission):
     function_name = test["FUNCTION_NAME"]
     module_name = "DownloadedAssignment"
@@ -72,7 +74,11 @@ def check_return(test, submission):
         if result is not None:
             print(f"Testing function '{function_name}' with parameters {params}...")
             print(f"The result of the function call is: {result} \n")
-        
+
+
+def push_grade():
+    pass
+
 
 def get_paginated_list_length(paginated_list):
     # Paginated lists don't have a length attribute, so we have to count them manually
