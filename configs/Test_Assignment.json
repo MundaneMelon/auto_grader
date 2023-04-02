@@ -16,7 +16,7 @@
             "POINTS": 5,
             "FUNCTION_NAME": "add",
             "INPUTS": [[1, 2], [3, 4]],
-            "EXPECTED_OUTPUTS": [3, 9],
+            "EXPECTED_OUTPUTS": [3, 7],
             "OUTPUT_TYPE": "return"
         },
         {
