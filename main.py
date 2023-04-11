@@ -24,8 +24,23 @@ def get_config_files():
 
 
 def get_submissions(config):
-    course = canvas.get_course(config["CANVAS"]["COURSE_ID"])
-    assignment = course.get_assignment(config["CANVAS"]["ASSIGNMENT_ID"])
+    try:
+        course = canvas.get_course(config["CANVAS"]["COURSE_ID"])
+        assignment = course.get_assignment(config["CANVAS"]["ASSIGNMENT_ID"])
+    except TypeError:
+        print("Error: course and assignment ID not properly specified.")
+
+    # check that the right number of points are possible
+    points_possible = 0
+    for test in config["TESTS"]:
+        try:
+            points_possible += test["POINTS"]
+        except KeyError:
+            print("Error: no points assigned to test. Defaulting to 0 points.")
+    if points_possible != assignment.points_possible:
+        print("Warning: total points possible does not match the assignment's value")
+        print(f"    (Config includes {points_possible} points, "
+              f"assignment is worth {assignment.points_possible} points)")
 
     submissions = assignment.get_submissions()
 
@@ -36,19 +51,31 @@ def get_submissions(config):
         submission_count += 1
 
         # SETTING TO ONLY GRADE CERTAIN STUDENTS (OVERRIDES EVERYTHING)
-        if config["SETTINGS"]["ONLY_GRADE_STUDENTS"]:
+        try:
+            only_grade_students = config["SETTINGS"]["ONLY_GRADE_STUDENTS"]
+        except KeyError:
+            only_grade_students = False
+        if only_grade_students:
             if student_name not in config["SETTINGS"]["ONLY_GRADE_STUDENTS"]:
                 print(f"{student_name} is not in the ONLY_GRADE_STUDENTS list... IGNORING")
                 continue
 
         # SETTING TO IGNORE STUDENTS
-        if config["SETTINGS"]["DONT_GRADE_STUDENTS"]:
+        try:
+            dont_grade_students = config["SETTINGS"]["DONT_GRADE_STUDENTS"]
+        except KeyError:
+            dont_grade_students = False
+        if dont_grade_students:
             if student_name in config["SETTINGS"]["DONT_GRADE_STUDENTS"]:
                 print(f"{student_name} is in the DONT_GRADE_STUDENTS list... IGNORING")
                 continue
 
         # SETTING TO IGNORE ALREADY GRADED SUBMISSIONS
-        if config["SETTINGS"]["IGNORE_ALREADY_GRADED"]:
+        try:
+            ignore_already_graded = config["SETTINGS"]["IGNORE_ALREADY_GRADED"]
+        except KeyError:
+            ignore_already_graded = False
+        if ignore_already_graded:
             if submission.workflow_state == "graded":
                 print(f"{student_name} has already been graded... IGNORING")
                 continue
@@ -63,7 +90,11 @@ def get_submissions(config):
             check_submission(submission, config, student_name)
         else:
             # SETTING TO GIVE 0 IF NOT SUBMITTED
-            if config["SETTINGS"]["IGNORE_UNSUBMITTED"]:
+            try:
+                ignore_unsubmitted = config["SETTINGS"]["IGNORE_UNSUBMITTED"]
+            except KeyError:
+                ignore_unsubmitted = False
+            if ignore_unsubmitted:
                 print(f"{student_name} has not submitted the assignment yet... IGNORING")
             else:
                 print(f"{student_name} has not submitted the assignment yet... GRADE SET TO 0")
@@ -80,7 +111,10 @@ def check_submission(submission, config, student_name):
     total_score = 0
     for test in config["TESTS"]:
         if check_return(test):
-            total_score += test["POINTS"]
+            try:
+                total_score += test["POINTS"]
+            except KeyError:
+                pass
 
     push_grade(submission, total_score, student_name)
 
@@ -94,39 +128,69 @@ def run_function(module_name, function_name, args, test):
     result = None
     try:
         if test["OUTPUT_TYPE"] == "return":
-            result = my_function(*args)
+            try:
+                result = my_function(*args)
+            except Exception as e:
+                print(f"Submission throws error:", e)
+                return None
         elif test["OUTPUT_TYPE"] == "print":
             # redirect the standard output to a variable
             output = io.StringIO()
             sys.stdout = output
 
             # call the function and get the result and output
-            my_function(*args)
+            try:
+                my_function(*args)
+            except Exception as e:
+                print(f"Submission throws error: ", e)
+                return None
+
             result = output.getvalue()
 
             # restore the standard output
             sys.stdout = sys.__stdout__
+        else:
+            print("Error: output type not properly specified for test case.")
 
         return result
 
     except TypeError:
         print(f"Error: '{function_name}' expects {my_function.__code__.co_argcount} arguments,"
-              f" but {len(args)} were given.")
+              f" but {len(args)} were given. Skipping test.")
+        return False
+    except KeyError:
+        print("Error: output type not specified for test case. Skipping test.")
         return None
 
 
 def check_return(test):
     passed = True
-    function_name = test["FUNCTION_NAME"]
+    try:
+        function_name = test["FUNCTION_NAME"]
+    except KeyError:
+        print("Error: no function name specified for test case. Skipping test.")
+        return False
     module_name = "DownloadedAssignment"
-    for i in range(len(test["INPUTS"])):
+
+    try:
+        length = len(test["INPUTS"])
+    except KeyError:
+        print("Error: no inputs specified for test case. Skipping test.")
+        return False
+
+    for i in range(length):
         try:
             result = run_function(module_name, function_name, test["INPUTS"][i], test)
         except AttributeError:
             print(f"Submission has no function {function_name}")
             return False
         if result is not None:
-            if result != test["EXPECTED_OUTPUTS"][i]:
+            try:
+                expected_output = test["EXPECTED_OUTPUTS"][i]
+            except KeyError:
+                print("Error: output not specified for test case. Skipping test.")
+                return False
+            if result != expected_output:
                 print(f"Function {function_name} with args {test['INPUTS'][i]} {test['OUTPUT_TYPE']}ed {result}, "
                       f"expecting {test['EXPECTED_OUTPUTS'][i]}")
                 passed = False
