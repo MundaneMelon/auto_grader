@@ -14,6 +14,7 @@ API_KEY = "7~XHBD7yRxf00NlUvfzjf6e5mRpmzm0vpLnWqP1geDCeAuGKmiCRehopSg2oejoBwY"
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
+
 def get_config_files():
     files = []
     for file in os.listdir("configs"):
@@ -26,7 +27,6 @@ def get_submissions(config):
     course = canvas.get_course(config["CANVAS"]["COURSE_ID"])
     assignment = course.get_assignment(config["CANVAS"]["ASSIGNMENT_ID"])
 
-
     submissions = assignment.get_submissions()
 
     # get submissions and test them
@@ -36,13 +36,13 @@ def get_submissions(config):
         submission_count += 1
 
         # SETTING TO ONLY GRADE CERTAIN STUDENTS (OVERRIDES EVERYTHING)
-        if config["SETTINGS"]["ONLY_GRADE_STUDENTS"] != []:
+        if config["SETTINGS"]["ONLY_GRADE_STUDENTS"]:
             if student_name not in config["SETTINGS"]["ONLY_GRADE_STUDENTS"]:
                 print(f"{student_name} is not in the ONLY_GRADE_STUDENTS list... IGNORING")
                 continue
 
         # SETTING TO IGNORE STUDENTS
-        if config["SETTINGS"]["DONT_GRADE_STUDENTS"] != []:
+        if config["SETTINGS"]["DONT_GRADE_STUDENTS"]:
             if student_name in config["SETTINGS"]["DONT_GRADE_STUDENTS"]:
                 print(f"{student_name} is in the DONT_GRADE_STUDENTS list... IGNORING")
                 continue
@@ -52,7 +52,6 @@ def get_submissions(config):
             if submission.workflow_state == "graded":
                 print(f"{student_name} has already been graded... IGNORING")
                 continue
-            
 
         if submission.workflow_state == "submitted":
             # progress_bar(submission_count, get_paginated_list_length(submissions), submission.attachments[0])
@@ -72,9 +71,9 @@ def get_submissions(config):
 
 
 def get_student_name(student_id, course):
-        student = course.get_user(student_id)
-        student_name = student.name
-        return student_name
+    student = course.get_user(student_id)
+    student_name = student.name
+    return student_name
 
 
 def check_submission(submission, config, student_name):
@@ -82,7 +81,7 @@ def check_submission(submission, config, student_name):
     for test in config["TESTS"]:
         if check_return(test):
             total_score += test["POINTS"]
-    
+
     push_grade(submission, total_score, student_name)
 
 
@@ -91,9 +90,9 @@ def run_function(module_name, function_name, args, test):
     module = importlib.import_module(module_name)
 
     # dynamically get the function object and call it with the parameters
+    my_function = getattr(module, function_name)
+    result = None
     try:
-        my_function = getattr(module, function_name)
-
         if test["OUTPUT_TYPE"] == "return":
             result = my_function(*args)
         elif test["OUTPUT_TYPE"] == "print":
@@ -109,32 +108,40 @@ def run_function(module_name, function_name, args, test):
             sys.stdout = sys.__stdout__
 
         return result
-        
+
     except TypeError:
-        print(f"Error: '{function_name}' expects {my_function.__code__.co_argcount} arguments, but {len(args)} were given.")
+        print(f"Error: '{function_name}' expects {my_function.__code__.co_argcount} arguments,"
+              f" but {len(args)} were given.")
         return None
-    
+
 
 def check_return(test):
     passed = True
     function_name = test["FUNCTION_NAME"]
     module_name = "DownloadedAssignment"
     for i in range(len(test["INPUTS"])):
-        result = run_function(module_name, function_name, test["INPUTS"][i], test)
+        try:
+            result = run_function(module_name, function_name, test["INPUTS"][i], test)
+        except AttributeError:
+            print(f"Submission has no function {function_name}")
+            return False
         if result is not None:
             if result != test["EXPECTED_OUTPUTS"][i]:
+                print(f"Function {function_name} with args {test['INPUTS'][i]} {test['OUTPUT_TYPE']}ed {result}, "
+                      f"expecting {test['EXPECTED_OUTPUTS'][i]}")
                 passed = False
-
+        elif test["EXPECTED_OUTPUTS"][i] is not None:
+            passed = False
     return passed
-    
-                
+
+
 def push_grade(submission, score, student_name):
     try:
         # Update the submission score and comment
         submission.edit(submission={'score': score, 'comment': 'Your grade is ' + str(score)})
-        
+
         # Print a message indicating success
-        print('Grade pushed successfully for', student_name)
+        print(f"Grade of {score} pushed successfully for {student_name}")
     except CanvasException as e:
         print('Error:', e)
 
