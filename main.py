@@ -84,6 +84,16 @@ def get_submissions(config):
                 print(f"{student_name} has already been graded... IGNORING")
                 continue
 
+        # CHECK LANGUAGE SETTING
+        try:
+            language = config["SETTINGS"]["LANGUAGE"].lower()
+        except KeyError:
+            print("Error: language not specified. Defaulting to Python.")
+            language = "python"
+        if language != "python" and language != "java":
+            print("Error: language not properly specified. Accepted values are \"python\" and \"java\".")
+            return
+
         if submission.workflow_state == "submitted":
             # progress_bar(submission_count, get_paginated_list_length(submissions), submission.attachments[0])
             attachment = Canvas.get_file(canvas, submission.attachments[0]).get_contents()
@@ -123,12 +133,20 @@ def check_submission(submission, config, student_name):
     push_grade(submission, total_score, student_name)
 
 
-def run_function(module_name, function_name, args, test):
-    # dynamically import the module
-    module = importlib.import_module(module_name)
+def run_function(module_name, function_name, args, test, language):
+    if language == "python":
+        # dynamically import the module
+        module = importlib.import_module(module_name)
 
-    # dynamically get the function object and call it with the parameters
-    my_function = getattr(module, function_name)
+        # dynamically get the function object and call it with the parameters
+        my_function = getattr(module, function_name)
+    elif language == "java":
+        # import java stuff here
+        myfunction = None
+    else:
+        print("Error: unknown language.")
+        return
+
     result = None
     try:
         if test["OUTPUT_TYPE"] == "return":
@@ -184,7 +202,8 @@ def check_return(test):
 
     for i in range(length):
         try:
-            result = run_function(module_name, function_name, test["INPUTS"][i], test)
+            result = run_function(module_name, function_name, test["INPUTS"][i], test,
+                                  test["SETTINGS"]["LANGUAGE"].lower())
         except AttributeError:
             print(f"Submission has no function {function_name}")
             return False

@@ -5,6 +5,7 @@
     },
 
     "SETTINGS":{
+        "LANGUAGE": "pyathon",
         "IGNORE_UNSUBMITTED": false,
         "IGNORE_ALREADY_GRADED": true,
         "ONLY_GRADE_STUDENTS": [],
