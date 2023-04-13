@@ -29,6 +29,10 @@ def get_submissions(config):
         assignment = course.get_assignment(config["CANVAS"]["ASSIGNMENT_ID"])
     except TypeError:
         print("Error: course and assignment ID not properly specified.")
+        return
+    except CanvasException as e:
+        print("Error: ", e)
+        return
 
     # check that the right number of points are possible
     points_possible = 0
@@ -226,10 +230,17 @@ def progress_bar(progress, total, text):
 
 def main():
     config_files = get_config_files()
+    if len(config_files) < 1:
+        print("Error: No config files found."
+              "Please make sure all config files end with .json and are located in the /configs folder.")
 
     for config_file in config_files:
         with open("configs/" + config_file) as f:
-            config = json.load(f)
+            try:
+                config = json.load(f)
+            except:
+                print("Error: problem found with json file.")
+                return
 
             get_submissions(config)
 
