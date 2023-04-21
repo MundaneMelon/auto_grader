@@ -100,9 +100,11 @@ def get_submissions(config):
             except KeyError:
                 ignore_unsubmitted = False
             if ignore_unsubmitted:
-                print(f"{student_name} has not submitted the assignment yet... IGNORING")
+                pass
+                # print(f"{student_name} has not submitted the assignment yet... IGNORING")
             else:
-                print(f"{student_name} has not submitted the assignment yet... GRADE SET TO 0")
+                pass
+                # print(f"{student_name} has not submitted the assignment yet... GRADE SET TO 0")
                 push_grade(submission, 0, student_name)
         progress_bar(submission_count, get_paginated_list_length(submissions))
 
@@ -211,7 +213,7 @@ def push_grade(submission, score, student_name):
         submission.edit(submission={'score': score, 'comment': 'Your grade is ' + str(score)})
 
         # Print a message indicating success
-        print(f"Grade of {score} pushed successfully for {student_name}")
+        # print(f"Grade of {score} pushed successfully for {student_name}")
     except CanvasException as e:
         print('Error:', e)
 
@@ -229,7 +231,7 @@ def progress_bar(progress, total):
     progress_bar_length = 20  # Length of progress bar
     filled_length = int(progress_bar_length * progress_percent)
     bar = '▮' * filled_length + '-' * (progress_bar_length - filled_length)
-    print(f'[{bar}] {int(progress_percent * 100)}%')
+    print(f'\r[{bar}] {int(progress_percent * 100)}%')
 
 
 def main():
