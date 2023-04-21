@@ -1,4 +1,6 @@
-from canvasapi import Canvas  # pip install canvasapi 
+import time
+
+from canvasapi import Canvas  # pip install canvasapi
 from canvasapi.exceptions import CanvasException
 import os
 import io
@@ -85,7 +87,6 @@ def get_submissions(config):
                 continue
 
         if submission.workflow_state == "submitted":
-            # progress_bar(submission_count, get_paginated_list_length(submissions), submission.attachments[0])
             attachment = Canvas.get_file(canvas, submission.attachments[0]).get_contents()
             file = open("DownloadedAssignment.py", "w")
             for line in attachment:
@@ -103,6 +104,7 @@ def get_submissions(config):
             else:
                 print(f"{student_name} has not submitted the assignment yet... GRADE SET TO 0")
                 push_grade(submission, 0, student_name)
+        progress_bar(submission_count, get_paginated_list_length(submissions))
 
 
 def get_student_name(student_id, course):
@@ -222,10 +224,12 @@ def get_paginated_list_length(paginated_list):
     return count
 
 
-def progress_bar(progress, total, text):
-    percent = 100 * (progress / float(total))
-    bar = "▮" * int(percent) + "-" * (100 - int(percent))
-    print(f"\r|{bar}| {percent:.2f}% {text}", end="\r")
+def progress_bar(progress, total):
+    progress_percent = progress / total
+    progress_bar_length = 20  # Length of progress bar
+    filled_length = int(progress_bar_length * progress_percent)
+    bar = '▮' * filled_length + '-' * (progress_bar_length - filled_length)
+    print(f'[{bar}] {int(progress_percent * 100)}%')
 
 
 def main():
