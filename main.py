@@ -188,6 +188,9 @@ def check_return(test):
         except AttributeError:
             print(f"Submission has no function {function_name}")
             return False
+        except TimeoutError:
+            print(f"Function {function_name} timed out")
+            return False
         if result is not None:
             try:
                 expected_output = test["EXPECTED_OUTPUTS"][i]
