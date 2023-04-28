@@ -32,6 +32,13 @@
             "INPUTS": [[2, 2], [5, 5]],
             "EXPECTED_OUTPUTS": [4, 25],
             "OUTPUT_TYPE": "print"
+        },
+        {
+            "POINTS": 5,
+            "FUNCTION_NAME": "divide",
+            "INPUTS": [[10, 10], [10, 2]],
+            "EXPECTED_OUTPUTS": [1, 5],
+            "OUTPUT_TYPE": "print"
         }
     ]
 }
