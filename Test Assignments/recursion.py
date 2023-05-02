@@ -14,7 +14,7 @@ def print_n_times(n, string):
     if n < 1:
         return
     print(string)
-    return print_n_times(n - 1, string)
+    print_n_times(n - 1, string)
 
 
 def recursive_addition(n):
