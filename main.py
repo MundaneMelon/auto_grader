@@ -79,13 +79,13 @@ def get_submissions(config):
             ignore_already_graded = config["SETTINGS"]["IGNORE_ALREADY_GRADED"]
         except KeyError:
             ignore_already_graded = False
+
         if ignore_already_graded:
-            if submission.workflow_state == "graded":
+            if submission.workflow_state == "graded" and student_name not in config["SETTINGS"]["REGRADE_STUDENTS"]:
                 print(f"{student_name} has already been graded... IGNORING")
                 continue
 
-        if submission.workflow_state == "submitted" or \
-                (not ignore_already_graded and submission.workflow_state == "graded"):
+        if submission.workflow_state == "submitted":
             # progress_bar(submission_count, get_paginated_list_length(submissions), submission.attachments[0])
             attachment = Canvas.get_file(canvas, submission.attachments[0]).get_contents()
             file = open("DownloadedAssignment.py", "w")
@@ -100,9 +100,9 @@ def get_submissions(config):
             except KeyError:
                 ignore_unsubmitted = False
             if ignore_unsubmitted:
-                print(f"{student_name} has not submitted the assignment yet... IGNORING")
+                print(f"{student_name} has not submitted the assignment yet or has not submitted a NEW assignment... IGNORING")
             else:
-                print(f"{student_name} has not submitted the assignment yet... GRADE SET TO 0")
+                print(f"{student_name} has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0")
                 push_grade(submission, 0, student_name)
 
 
@@ -210,7 +210,7 @@ def check_return(test):
 def push_grade(submission, score, student_name):
     try:
         # Update the submission score and comment
-        submission.edit(submission={'posted_grade': score, 'comment': f"graded by autograder"})
+        submission.edit(submission={'posted_grade': score})
 
         # Print a message indicating success
         print(f"Grade of {score} pushed successfully for {student_name}")
@@ -224,12 +224,6 @@ def get_paginated_list_length(paginated_list):
     for x in paginated_list:
         count += 1
     return count
-
-
-def progress_bar(progress, total, text):
-    percent = 100 * (progress / float(total))
-    bar = "▮" * int(percent) + "-" * (100 - int(percent))
-    print(f"\r|{bar}| {percent:.2f}% {text}", end="\r")
 
 
 def main():

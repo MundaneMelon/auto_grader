@@ -1,44 +1,24 @@
 {
     "CANVAS":{
         "COURSE_ID": "6105794",
-        "ASSIGNMENT_ID": "35322737"
+        "ASSIGNMENT_ID": "37378873"
     },
 
     "SETTINGS":{
-        "IGNORE_UNSUBMITTED": false,
+        "IGNORE_UNSUBMITTED": true,
         "IGNORE_ALREADY_GRADED": false,
+        "REGRADE_STUDENTS": [],
         "ONLY_GRADE_STUDENTS": [],
-        "DONT_GRADE_STUDENTS": ["student3", "student4"]
+        "DONT_GRADE_STUDENTS": []
     },
 
     "TESTS": [
         {
-            "POINTS": 5,
+            "POINTS": 100,
             "FUNCTION_NAME": "add",
             "INPUTS": [[1, 2], [3, 4]],
             "EXPECTED_OUTPUTS": [3, 7],
             "OUTPUT_TYPE": "return"
-        },
-        {
-            "POINTS": 5,
-            "FUNCTION_NAME": "subtract",
-            "INPUTS": [[3, 2], [4, 5]],
-            "EXPECTED_OUTPUTS": [1, -1],
-            "OUTPUT_TYPE": "return"
-        },
-        {
-            "POINTS": 5,
-            "FUNCTION_NAME": "multiply",
-            "INPUTS": [[2, 2], [5, 5]],
-            "EXPECTED_OUTPUTS": [4, 25],
-            "OUTPUT_TYPE": "print"
-        },
-        {
-            "POINTS": 5,
-            "FUNCTION_NAME": "divide",
-            "INPUTS": [[10, 10], [10, 2]],
-            "EXPECTED_OUTPUTS": [1, 5],
-            "OUTPUT_TYPE": "print"
         }
     ]
 }
