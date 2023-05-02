@@ -210,7 +210,7 @@ def check_return(test):
 def push_grade(submission, score, student_name):
     try:
         # Update the submission score and comment
-        submission.edit(submission={'score': score, 'comment': 'Your grade is ' + str(score)})
+        submission.edit(submission={'posted_grade': score, 'comment': f"graded by autograder"})
 
         # Print a message indicating success
         print(f"Grade of {score} pushed successfully for {student_name}")
