@@ -6,7 +6,7 @@
 
     "SETTINGS":{
         "IGNORE_UNSUBMITTED": false,
-        "IGNORE_ALREADY_GRADED": true,
+        "IGNORE_ALREADY_GRADED": false,
         "ONLY_GRADE_STUDENTS": [],
         "DONT_GRADE_STUDENTS": ["student3", "student4"]
     },
