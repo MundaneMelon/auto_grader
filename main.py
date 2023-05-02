@@ -84,7 +84,8 @@ def get_submissions(config):
                 print(f"{student_name} has already been graded... IGNORING")
                 continue
 
-        if submission.workflow_state == "submitted":
+        if submission.workflow_state == "submitted" or \
+                (not ignore_already_graded and submission.workflow_state == "graded"):
             # progress_bar(submission_count, get_paginated_list_length(submissions), submission.attachments[0])
             attachment = Canvas.get_file(canvas, submission.attachments[0]).get_contents()
             file = open("DownloadedAssignment.py", "w")
