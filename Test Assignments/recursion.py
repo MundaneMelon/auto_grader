@@ -20,4 +20,4 @@ def print_n_times(n, string):
 def recursive_addition(n):
     if n == 0:
         return 0
-    return 1 + recursive_addition(n - 1)
+    return n + recursive_addition(n - 1)

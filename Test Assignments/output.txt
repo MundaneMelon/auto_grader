@@ -1,0 +1,114 @@
+"C:\Program Files\Python39\python.exe" S:/auto_grader/main.py
+Test Account has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for Test Account
+Function factorial with args [1] returned -1, expecting 1
+Function factorial with args [5] returned -120, expecting 120
+Function factorial with args [7] returned -5040, expecting 5040
+Function factorial with args [10] returned -3628800, expecting 3628800
+Function remove_every_other_letter with args ['abcdefgh'] returned ac, expecting aceg
+Function print_n_times with args [5, 'a'] printed a
+string
+string
+string
+string
+, expecting a
+a
+a
+a
+a
+
+Function print_n_times with args [4, 'asdf'] printed asdf
+string
+string
+string
+, expecting asdf
+asdf
+asdf
+asdf
+
+Function recursive_addition with args [1] returned 0, expecting 1
+Function recursive_addition with args [4] returned 0, expecting 10
+Function recursive_addition with args [6] returned 0, expecting 21
+Function recursive_addition with args [10] returned 0, expecting 55
+Grade of 0 pushed successfully for Test Student
+Quinnton Parchman has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for Quinnton Parchman
+FakeStudent3 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent3
+FakeStudent4 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent4
+FakeStudent5 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent5
+FakeStudent6 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent6
+FakeStudent8 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent8
+FakeStudent9 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent9
+FakeStudent12 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent12
+FakeStudent13 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent13
+FakeStudent10 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent10
+FakeStudent11 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent11
+FakeStudent2 has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0
+Grade of 0 pushed successfully for FakeStudent2
+Function factorial with args [1] returned 0, expecting 1
+Function factorial with args [5] returned 0, expecting 120
+Function factorial with args [7] returned 0, expecting 5040
+Function factorial with args [10] returned 0, expecting 3628800
+Function recursive_addition with args [4] returned 4, expecting 10
+Function recursive_addition with args [6] returned 6, expecting 21
+Function recursive_addition with args [10] returned 10, expecting 55
+Grade of 10 pushed successfully for Account 13
+Function remove_every_other_letter with args ['abcdefgh'] returned abcdefgh, expecting aceg
+Submission throws error: string index out of range
+Function remove_every_other_letter with args ['face'] returned face, expecting fc
+Function recursive_addition with args [4] returned 4, expecting 10
+Function recursive_addition with args [6] returned 6, expecting 21
+Function recursive_addition with args [10] returned 10, expecting 55
+Grade of 10 pushed successfully for Account 14
+Function print_n_times with args [5, 'a'] printed , expecting a
+a
+a
+a
+a
+
+Function print_n_times with args [4, 'asdf'] printed , expecting asdf
+asdf
+asdf
+asdf
+
+Function recursive_addition with args [4] returned 4, expecting 10
+Function recursive_addition with args [6] returned 6, expecting 21
+Function recursive_addition with args [10] returned 10, expecting 55
+Grade of 10 pushed successfully for Account 15
+Function recursive_addition with args [1] returned 2, expecting 1
+Function recursive_addition with args [4] returned 8, expecting 10
+Function recursive_addition with args [6] returned 12, expecting 21
+Function recursive_addition with args [10] returned 20, expecting 55
+Grade of 15 pushed successfully for Account 16
+Submission has no function remove_every_other_letter
+Function recursive_addition with args [4] returned 4, expecting 10
+Function recursive_addition with args [6] returned 6, expecting 21
+Function recursive_addition with args [10] returned 10, expecting 55
+Grade of 10 pushed successfully for Account 17
+Submission has no function factorial
+Submission has no function remove_every_other_letter
+Submission has no function print_n_times
+Submission has no function recursive_addition
+Grade of 0 pushed successfully for Account 18
+Submission has no function factorial
+Submission has no function remove_every_other_letter
+Submission has no function print_n_times
+Submission has no function recursive_addition
+Grade of 0 pushed successfully for Account 19
+Submission throws error: maximum recursion depth exceeded
+Submission throws error: maximum recursion depth exceeded
+Submission throws error: maximum recursion depth exceeded
+Submission throws error: maximum recursion depth exceeded
+Grade of 20 pushed successfully for Account 12
+
+Process finished with exit code 0

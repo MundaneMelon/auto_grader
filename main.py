@@ -74,6 +74,12 @@ def get_submissions(config):
                 print(f"{student_name} is in the DONT_GRADE_STUDENTS list... IGNORING")
                 continue
 
+        # SETTING TO REGRADE SPECIFIC STUDENTS
+        try:
+            regrade_students = config["SETTINGS"]["REGRADE_STUDENTS"]
+        except KeyError:
+            regrade_students = []
+
         # SETTING TO IGNORE ALREADY GRADED SUBMISSIONS
         try:
             ignore_already_graded = config["SETTINGS"]["IGNORE_ALREADY_GRADED"]
@@ -81,18 +87,36 @@ def get_submissions(config):
             ignore_already_graded = False
 
         if ignore_already_graded:
-            if submission.workflow_state == "graded" and student_name not in config["SETTINGS"]["REGRADE_STUDENTS"]:
+            if submission.workflow_state == "graded" and student_name not in regrade_students:
                 print(f"{student_name} has already been graded... IGNORING")
                 continue
 
-        if submission.workflow_state == "submitted":
+        if submission.workflow_state == "submitted" or \
+                (submission.workflow_state == "graded" and not ignore_already_graded):
             # progress_bar(submission_count, get_paginated_list_length(submissions), submission.attachments[0])
-            attachment = Canvas.get_file(canvas, submission.attachments[0]).get_contents()
-            file = open("DownloadedAssignment.py", "w")
+            try:
+                attachment = Canvas.get_file(canvas, submission.attachments[0]).get_contents()
+            except IndexError:  # Assignment has not been submitted yet
+                try:
+                    ignore_unsubmitted = config["SETTINGS"]["IGNORE_UNSUBMITTED"]
+                except KeyError:
+                    ignore_unsubmitted = False
+                if ignore_unsubmitted:
+                    print(
+                        f"{student_name} has not submitted the assignment yet or has not submitted a NEW "
+                        f"assignment... IGNORING")
+                else:
+                    print(
+                        f"{student_name} has not submitted the assignment yet or has not submitted a NEW "
+                        f"assignment... GRADE SET TO 0")
+                    push_grade(submission, 0, student_name)
+                continue
+            file = open(f"{student_name}.py", "w")
             for line in attachment:
                 file.write(line.rstrip('\r'))
             file.close()
             check_submission(submission, config, student_name)
+            os.remove(f"{student_name}.py")
         else:
             # SETTING TO GIVE 0 IF NOT SUBMITTED
             try:
@@ -100,9 +124,11 @@ def get_submissions(config):
             except KeyError:
                 ignore_unsubmitted = False
             if ignore_unsubmitted:
-                print(f"{student_name} has not submitted the assignment yet or has not submitted a NEW assignment... IGNORING")
+                print(f"{student_name} has not submitted the assignment yet or has not submitted a NEW assignment... "
+                      f"IGNORING")
             else:
-                print(f"{student_name} has not submitted the assignment yet or has not submitted a NEW assignment... GRADE SET TO 0")
+                print(f"{student_name} has not submitted the assignment yet or has not submitted a NEW assignment... "
+                      f"GRADE SET TO 0")
                 push_grade(submission, 0, student_name)
 
 
@@ -115,7 +141,7 @@ def get_student_name(student_id, course):
 def check_submission(submission, config, student_name):
     total_score = 0
     for test in config["TESTS"]:
-        if check_return(test):
+        if check_return(test, student_name):
             try:
                 total_score += test["POINTS"]
             except KeyError:
@@ -139,11 +165,11 @@ def run_function(module_name, function_name, args, test):
                 print(f"Submission throws error:", e)
                 return None
         elif test["OUTPUT_TYPE"] == "print":
-            # redirect the standard output to a variable
+            # redirect the standard output.txt to a variable
             output = io.StringIO()
             sys.stdout = output
 
-            # call the function and get the result and output
+            # call the function and get the result and output.txt
             try:
                 my_function(*args)
             except Exception as e:
@@ -152,10 +178,10 @@ def run_function(module_name, function_name, args, test):
 
             result = output.getvalue()
 
-            # restore the standard output
+            # restore the standard output.txt
             sys.stdout = sys.__stdout__
         else:
-            print("Error: output type not properly specified for test case.")
+            print("Error: output.txt type not properly specified for test case.")
 
         return result
 
@@ -164,18 +190,18 @@ def run_function(module_name, function_name, args, test):
               f" but {len(args)} were given. Skipping test.")
         return False
     except KeyError:
-        print("Error: output type not specified for test case. Skipping test.")
+        print("Error: output.txt type not specified for test case. Skipping test.")
         return None
 
 
-def check_return(test):
+def check_return(test, student_name):
     passed = True
     try:
         function_name = test["FUNCTION_NAME"]
     except KeyError:
         print("Error: no function name specified for test case. Skipping test.")
         return False
-    module_name = "DownloadedAssignment"
+    module_name = f"{student_name}"
 
     try:
         length = len(test["INPUTS"])
@@ -192,11 +218,14 @@ def check_return(test):
         except TimeoutError:
             print(f"Function {function_name} timed out")
             return False
+        except Exception as e:
+            print(f"Submission returns exception {e}")
+            return False
         if result is not None:
             try:
                 expected_output = test["EXPECTED_OUTPUTS"][i]
             except KeyError:
-                print("Error: output not specified for test case. Skipping test.")
+                print("Error: output.txt not specified for test case. Skipping test.")
                 return False
             if result != expected_output:
                 print(f"Function {function_name} with args {test['INPUTS'][i]} {test['OUTPUT_TYPE']}ed {result}, "
@@ -221,7 +250,7 @@ def push_grade(submission, score, student_name):
 def get_paginated_list_length(paginated_list):
     # Paginated lists don't have a length attribute, so we have to count them manually
     count = 0
-    for x in paginated_list:
+    for _ in paginated_list:
         count += 1
     return count
 
