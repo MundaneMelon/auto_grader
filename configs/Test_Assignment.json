@@ -9,7 +9,8 @@
         "IGNORE_ALREADY_GRADED": false,
         "ONLY_GRADE_STUDENTS": [],
         "DONT_GRADE_STUDENTS": [],
-        "DESCRIBE_TEST_CASES": false
+        "LEAVE_COMMENTS": true,
+        "DESCRIBE_TEST_CASES": true
     },
 
     "TESTS": [
