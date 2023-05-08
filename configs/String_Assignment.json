@@ -1,0 +1,53 @@
+{
+    "CANVAS":{
+        "COURSE_ID": "6105794",
+        "ASSIGNMENT_ID": "37500283"
+    },
+
+    "SETTINGS":{
+        "IGNORE_UNSUBMITTED": false,
+        "IGNORE_ALREADY_GRADED": false,
+        "ONLY_GRADE_STUDENTS": [],
+        "DONT_GRADE_STUDENTS": [],
+        "LEAVE_COMMENTS": true,
+        "DESCRIBE_TEST_CASES": true
+    },
+
+    "TESTS": [
+        {
+            "POINTS": 2,
+            "FUNCTION_NAME": "hello_name",
+            "INPUTS": [["Bob"], ["John"]],
+            "EXPECTED_OUTPUTS": ["Hello Bob!", "Hello John!"],
+            "OUTPUT_TYPE": "return"
+        },
+        {
+            "POINTS": 2,
+            "FUNCTION_NAME": "make_abba",
+            "INPUTS": [["one", "two"], ["a", "face"]],
+            "EXPECTED_OUTPUTS": ["onetwotwoone", "afacefacea"],
+            "OUTPUT_TYPE": "return"
+        },
+        {
+            "POINTS": 2,
+            "FUNCTION_NAME": "make_tags",
+            "INPUTS": [["a", "Word"], ["i", "Name"]],
+            "EXPECTED_OUTPUTS": ["<a>Word</a>", "<i>Name</i>"],
+            "OUTPUT_TYPE": "return"
+        },
+        {
+            "POINTS": 2,
+            "FUNCTION_NAME": "make_out_word",
+            "INPUTS": [["<<<<<{{}}>>>>>", "Word"], ["<[{}]>", "Name"]],
+            "EXPECTED_OUTPUTS": ["<<<<<{{Word}}>>>>>", "<[{Name}]>"],
+            "OUTPUT_TYPE": "return"
+        },
+	{
+            "POINTS": 2,
+            "FUNCTION_NAME": "extra_end",
+            "INPUTS": [["Word"], ["Name"]],
+            "EXPECTED_OUTPUTS": ["rdrdrd", "mememe"],
+            "OUTPUT_TYPE": "return"
+        }
+    ]
+}
