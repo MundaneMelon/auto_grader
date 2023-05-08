@@ -19,10 +19,3 @@ def make_out_word(brackets="", word=""):
 
 def extra_end(string=""):
     return string[len(string) - 2:] * 3
-
-
-print(hello_name("Bob"))
-print(make_abba("one", "two"))
-print(make_tags("a", "Word"))
-print(make_out_word("<<<<<{{[]}}>>>>>", "Word"))
-print(extra_end("Word"))
