@@ -29,7 +29,7 @@ def get_submissions(config: json) -> None:
     """
     Retrieves all submissions, runs them against test cases, and awards points to each student.\n
     :param config: the JSON file containing the configuration settings for the assignment, including the Canvas course and assignment ID.
-    :return: nothing
+    :return: Nothing
     """
     try:
         course = canvas.get_course(config["CANVAS"]["COURSE_ID"])
@@ -101,12 +101,14 @@ def get_submissions(config: json) -> None:
         ignore_already_graded = False
 
     submissions = assignment.get_submissions()
+    total_submissions = get_paginated_list_length(submissions)
 
     # get submissions and test them
     submission_count = 0
     for submission in submissions:
         student_name = get_student_name(submission.user_id, course)
         submission_count += 1
+        print(f"Grading student {student_name}... ({submission_count} / {total_submissions})")
 
         if only_grade_students:
             if student_name not in config["SETTINGS"]["ONLY_GRADE_STUDENTS"]:
@@ -211,7 +213,7 @@ def check_submission(submission: Submission, config: json, student_name: str, to
             try:
                 total_score += test["POINTS"]
             except KeyError:
-                total_score += (total_points / total_score)
+                print("Error: No points specified for test case.")
 
     comment = f"Graded by Auto Grader. \nScore: {total_score} / {total_points}. " \
               f"\nDetails: {passed_cases} of {test_case_count} test cases passed. "
@@ -248,6 +250,7 @@ def run_function(module_name: str, function_name: str, args: list[any], test: js
             try:
                 my_function(*args)
             except Exception as e:
+                sys.stdout = sys.__stdout__
                 raise e
 
             result = output.getvalue()
@@ -270,8 +273,8 @@ def run_function(module_name: str, function_name: str, args: list[any], test: js
 def check_return(test: json, student_name: str) -> str:
     """
     Runs a set of tests on a student's downloaded submission.\n
-    :param test: the set of tests to run.
-    :param student_name: the name of the student.
+    :param test: the set of tests to run
+    :param student_name: the name of the student
     :return: A string detailing what mistakes or errors occurred. Returns an empty string if all tests pass.
     """
     try:
